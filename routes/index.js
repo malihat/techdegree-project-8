@@ -5,53 +5,89 @@ const router = express.Router();
 const db = require('../db');
 const { Book } = db.models;
 
+/* Handler function to wrap each route. */
+function asyncHandler(cb){
+    return async(req, res, next) => {
+      try {
+        await cb(req, res, next)
+      } catch(error){
+        res.status(500).send(error);
+      }
+    }
+  }
+
 // Display all books
-router.get('/books', async (req, res) => {
+router.get('/books', asyncHandler( async (req, res) => {
     let book = await Book.findAll();
-    console.log(book)
-    res.render('index', { book })
-});
+    // console.log(book)
+    if (book) {
+        res.render('index', { book })
+    } else {
+        res.sendStatus(404);
+    }
+}));
 
 router.get('/', (req, res) => {
     res.redirect('/books' )
 });
 
 // Create new book
-router.get('/books/new', async (req, res) => {
+router.get('/books/new', asyncHandler( async (req, res) => {
     res.render('new-book');
-});
+}));
 
 // Post new form
-router.post('/books/new', async (req, res) => {
+router.post('/books/new', asyncHandler( async (req, res) => {
     const book = await Book.create(req.body)
     // console.log(req.body);
     // res.render('new-book' )
-    res.redirect('/books/'+book.id);
-});
+    if (book) {
+        res.redirect('/books/'+book.id);
+    } else {
+        res.sendStatus(404);
+    } 
+}));
 
-router.get('/books/:id', async (req, res) => {
+router.get('/books/:id', asyncHandler( async (req, res) => {
     const book = await Book.findByPk(req.params.id);
-    res.render('update-book', {book})
-});
+    if (book) {
+        res.render('update-book', {book})
+    } else {
+        res.sendStatus(404);
+    }
+}));
 
 // Update book
-router.get('/books/:id', async (req, res) => {
+router.post('/books/:id', asyncHandler( async (req, res) => {
     const book = await Book.findByPk(req.params.id);
-    await book.update(req.body);
-    res.redirect('/books/'+book.id);
-});
+    if (book) {
+        await book.update(req.body);
+        // res.redirect('/books/'+book.id)
+        res.redirect('/books');
+    } else {
+        res.sendStatus(404);
+    }
+}));
 
 // Delete book
-router.get('/books/:id/delete', async (req, res) => {
+router.get('/books/:id/delete', asyncHandler( async (req, res) => {
     const book = await Book.findByPk(req.params.id);
-    res.render('books/delete', {book});
-});
+    if (book) {
+        res.render('update-book', {book});
+    } else {
+        res.sendStatus(404);
+    }
+}));
 
-router.post('/books/:id/delete', async (req, res) => {
+router.post('/books/:id/delete', asyncHandler( async (req, res) => {
     const book = await Book.findByPk(req.params.id);
-    await book.destroy();
-    res.render('books');
-})
+    if (book) {
+        await book.destroy();
+        res.redirect('/books');
+    } else {
+        res.sendStatus(404);
+    }
+}))
 
 
 
