@@ -8,9 +8,10 @@ block content
     h1 New Book
     form
       h2.error Oooops!
-      ul.error
-        li Author is required
-        li Name is required
+      //- p.error= errors
+      ul.error        
+        li= errors  
+        //- li Name is required
       p
         label(for='title') Title
         input#title(name='title', type='text')
@@ -26,4 +27,4 @@ block content
       p
         input(type='submit', value='Create New Book')
       p
-        a.button(href='all_books.html') Cancel
+        a.button(href='/books') Cancel
