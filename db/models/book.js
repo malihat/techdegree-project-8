@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 
+// Creates a model(table) and sets the field and their types
 module.exports = (sequelize) => {
   class Book extends Sequelize.Model {}
   Book.init({
