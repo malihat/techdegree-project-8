@@ -7,15 +7,14 @@ const { Book } = db.models;
 /* Handler function to wrap each route. */
 function asyncHandler(cb){
     return async(req, res, next) => {
-      try {
+        try {
         await cb(req, res, next)
-      } catch(error){
-        // res.status(500).send(error);
-        res.status(500).render('error');
-
-      }
+        } catch(error){
+            // res.status(500).send(error);
+            res.status(500).render('error');
+        }
     }
-  }
+}
 
 // Display all books
 router.get('/books', asyncHandler( async (req, res) => {
@@ -53,7 +52,7 @@ router.post('/books/new', asyncHandler( async (req, res) => {
             let errors = error.errors.map(err => err.message);
             // book instance holds the values of the form
             book = await Book.build(req.body);
-            res.render("form-error", { book, errors })
+            res.render("new-book", { book, errors })
 
         } else {
             // This error will be caught in the catch block of asyncHandler
@@ -67,7 +66,7 @@ router.get('/books/:id', asyncHandler( async (req, res) => {
     // Finds the exact book 
     let book = await Book.findByPk(req.params.id);
     if (book) {
-        res.render('update-book', {book, title: 'Update Book'})
+        res.render('update-book', {book})
     } else {
         // Shows error page if the book does not exist
         res.render('error')
@@ -94,7 +93,7 @@ router.post('/books/:id', asyncHandler( async (req, res) => {
             book = await Book.build(req.body);
             // Updates the exact book
             book.id = req.params.id; 
-            res.render("form-error", { book, errors })
+            res.render("update-book", { book, errors })
         } else {
             throw error;
         }

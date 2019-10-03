@@ -1,4 +1,4 @@
-extends layout.pug
+extends layout.pug  
 
 block content
   head
@@ -10,7 +10,6 @@ block content
       h2.error Oooops!
       ul.error        
         li= errors  
-        //- li Name is required
       p
         label(for='title') Title
         input#title(name='title', type='text')

@@ -1,12 +1,16 @@
-extends layout.pug
+extends layout.pug  
 
 block content
   head
     title A Brief History of Time
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    h1= title 
+    h1 Update Book 
     form(action="/books/"+book.id, method="post")
+      if (errors)
+        h2.error Oooops!
+        ul.error        
+          li= errors
       p
         label(for='title') Title
         input#title(name='title', type='text', value= book.title)
